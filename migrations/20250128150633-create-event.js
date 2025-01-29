@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false,
       },
       guests: {
-        type: Sequelize.JSON,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       createdAt: {

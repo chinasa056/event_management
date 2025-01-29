@@ -58,10 +58,14 @@ exports.getAllEvents = async (req, res) => {
 
     try {
         const eventsAvailable = await events.findAll();
+        const formattedEvents = eventsAvailable.map(event => ({
+            ...event.toJSON(), // Convert Sequelize instance to a plain object
+            guests: JSON.parse(event.guests) // Decode the JSON string
+        }));
 
         res.status(200).json({
             message: "All events available",
-            data: eventsAvailable
+            data: formattedEvents
         })
 
     } catch (error) {
