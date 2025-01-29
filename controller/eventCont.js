@@ -102,13 +102,13 @@ exports.getOneEvent = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
         const { scheduleDate } = req.body;
         
-        const oneEvent = await events.findByPk(id);
+        const oneEvent = await events.findOne({where :{id:id}});
         
         if (!oneEvent) {
-            return res.status(404).json("Product not found");
+            return res.status(404).json("event  not found");
         }
         
         const updatedEvent = await oneEvent.update({ scheduleDate });
