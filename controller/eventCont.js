@@ -60,7 +60,7 @@ exports.getAllEvents = async (req, res) => {
         const eventsAvailable = await events.findAll({
             raw: true // This returns plain objects instead of Sequelize instances
         });
-
+        
         // Convert 'guests' from a string to a proper JSON array
         const formattedEvents = eventsAvailable.map(event => ({
             ...event,
@@ -80,16 +80,24 @@ exports.getAllEvents = async (req, res) => {
     }
 };
 
-
 exports.getOneEvent = async (req, res) => {
 
     try {
         const {id} = req.params
-        const oneEvent = await events.findByPk(id);
+        const oneEvent = await events.findAll({where: {id: id}, raw: true});
+        if (!oneEvent) {
+            return res.status(404).json({
+                message: "Event not found"
+            })
+        }
+        const formattedEvents = oneEvent.map(event => ({
+            ...event,
+            guests: JSON.parse(event.guests) // Ensure guests is properly parsed
+        }));
 
         res.status(200).json({
             message: " one event found",
-            data: oneEvent
+            data: formattedEvents
         })
 
     } catch (error) {
@@ -98,7 +106,6 @@ exports.getOneEvent = async (req, res) => {
         })
     }
 }
-
 
 exports.updateEvent = async (req, res) => {
     try {
