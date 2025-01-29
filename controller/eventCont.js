@@ -1,3 +1,4 @@
+const { json } = require("sequelize");
 const events = require("../models/event");
 const organizerModel = require("../models/organizer");
 const { v4: uuidv4 } = require("uuid");
@@ -55,25 +56,30 @@ exports.createGuest = async (req, res) => {
 };
 
 exports.getAllEvents = async (req, res) => {
-
     try {
-        const eventsAvailable = await events.findAll();
+        const eventsAvailable = await events.findAll({
+            raw: true // This returns plain objects instead of Sequelize instances
+        });
+
+        // Convert 'guests' from a string to a proper JSON array
         const formattedEvents = eventsAvailable.map(event => ({
-            ...event.toJSON(), // Convert Sequelize instance to a plain object
-            guests: JSON.parse(event.guests) // Decode the JSON string
+            ...event,
+            guests: JSON.parse(event.guests) // Ensure guests is properly parsed
         }));
 
         res.status(200).json({
             message: "All events available",
             data: formattedEvents
-        })
+        });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({
-            error: console.error(error)
-        })
+            error: "Internal server error"
+        });
     }
 };
+
 
 exports.getOneEvent = async (req, res) => {
 
