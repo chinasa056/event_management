@@ -1,4 +1,4 @@
-const { registerOrganizer, getAllOrganizers, getAllOrganizersEvents } = require("../controller/organizerCOnt");
+const { registerOrganizer, getAllOrganizers, getAllOrganizersEvents } = require("../controller/organizerCont");
 
 const router = require("express").Router();
 
