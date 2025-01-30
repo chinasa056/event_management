@@ -12,7 +12,7 @@ const port = 2233;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin : "*"} ));
 
 app.use(router);
 app.use(weddingRouter);
