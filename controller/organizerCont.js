@@ -16,13 +16,11 @@ exports.registerOrganizer = async (req, res) => {
                 message: `organizer with email ${email} already exists`
             })
         }
-        // const hashedPassword = bcrypt.hashSync(password, 10);
         const newOrganizer = await organizer.create({
             id: uuidv4(),
             fullname,
             email,
             phone,
-            // password:hashedPassword
         })
         res.status(201).json({
             message: "New organizer created",
@@ -55,12 +53,7 @@ exports.getAllOrganizers = async (req, res) => {
 exports.getAllOrganizersEvents = async (req, res) => {
 
     try {
-        // const organizers = await organizer.findByPk(req.params.id, {
-        //     include: [{
-        //         model: event, as: "organizers",
-        //         attributes: ["eventName", "category", "venue", "scheduleDate"]
-        //     }]
-        // });
+        
         const organizersRecord = await organizer.findByPk(req.params.id, {
             include: [{
                 model: event, as: "events",  // Correct alias
@@ -80,48 +73,48 @@ exports.getAllOrganizersEvents = async (req, res) => {
     }
 }
 
-exports.login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+// exports.login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
 
-        const checkOrganizer = await organizer.findOne({ where: { email } });
+//         const checkOrganizer = await organizer.findOne({ where: { email } });
 
-        if (!checkOrganizer) {
-            res.status(404).json({
-                message: 'Email or password incorrect'
-            });
-        }
+//         if (!checkOrganizer) {
+//             res.status(404).json({
+//                 message: 'Email or password incorrect'
+//             });
+//         }
 
-        const checkOrganizerPassword = checkOrganizer.password;
-        const checkPassword = bcrypt.compareSync(password, checkOrganizerPassword);
+//         const checkOrganizerPassword = checkOrganizer.password;
+//         const checkPassword = bcrypt.compareSync(password, checkOrganizerPassword);
 
-        if (!checkPassword) {
-            res.status(401).json({
-                message: 'Wrong password'
-            });
-        }
+//         if (!checkPassword) {
+//             res.status(401).json({
+//                 message: 'Wrong password'
+//             });
+//         }
 
-        const generateToken = jwt.sign({
-            userId: checkOrganizer.id,
-            email: checkOrganizer.email
-        }, 'secretKey');
+//         const generateToken = jwt.sign({
+//             userId: checkOrganizer.id,
+//             email: checkOrganizer.email
+//         }, 'secretKey');
 
-        const result = {
-            fullname: checkOrganizer.fullname,
-            email: checkOrganizer.email,
-            phone: checkOrganizer.phone,
-            token: generateToken
-        }
+//         const result = {
+//             fullname: checkOrganizer.fullname,
+//             email: checkOrganizer.email,
+//             phone: checkOrganizer.phone,
+//             token: generateToken
+//         }
 
-        res.status(201).json({
-            message: 'Login successful',
-            info: result
-        })
-    } catch (error) {
-        res.status(500).json({
-            error: console.error(error)
-        })
-    }
-};
+//         res.status(201).json({
+//             message: 'Login successful',
+//             info: result
+//         })
+//     } catch (error) {
+//         res.status(500).json({
+//             error: console.error(error)
+//         })
+//     }
+// };
 
 
